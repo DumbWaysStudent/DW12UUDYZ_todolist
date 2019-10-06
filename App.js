@@ -14,7 +14,8 @@ import {
   ScrollView,
   Button,
   TextInput,
-  Alert
+  Alert,
+  CheckBox
 } from 'react-native';
 
 export default class App extends Component {
@@ -24,19 +25,24 @@ export default class App extends Component {
       value: '',
       listtodo: [
         {
-          task: 'work'
+          task: 'work',
+          done: false
         },
         {
-          task: 'sleep'
+          task: 'sleep',
+          done: false
         },
         {
-          task: 'study'
+          task: 'study',
+          done: false
         },
         {
-          task: 'run'
+          task: 'run',
+          done: false
         },
         {
-          task: 'swim'
+          task: 'swim',
+          done: false
         }
       ]
     };
@@ -74,7 +80,7 @@ export default class App extends Component {
                   this.textInput = input;
                 }}
                 onChangeText={text =>
-                  this.setState({ value: [{ task: text }] })
+                  this.setState({ value: [{ task: text, done: false }] })
                 }
                 value={this.state.value}
                 type="text"
@@ -93,15 +99,29 @@ export default class App extends Component {
           <View style={styles.containerList}>
             {(this.state.listtodo || []).map((item, index) => {
               return (
-                <View key={index} style={styles.containerViewList2}>
-                  <Text style={styles.textList}>{item.task}</Text>
-                  <Button
-                    style={styles.buttonDelete}
-                    title="Delete"
-                    onPress={() => {
-                      this.onDeleteItem(index);
-                    }}
-                  />
+                <View key={index} style={styles.containerViewList}>
+                  <View style={styles.containerViewList1}>
+                    <CheckBox
+                      checked={!!item.done}
+                      onPress={() =>
+                        this.setState(state => {
+                          const checkedDefault = { ...state.checkedDefault };
+                          checkedDefault[item] = !checkedDefault[item];
+                          return { checkedDefault };
+                        })
+                      }
+                    />
+                    <Text style={styles.textList}>{item.task}</Text>
+                  </View>
+                  <View style={styles.containerViewList2}>
+                    <Button
+                      style={styles.buttonDelete}
+                      title="Delete"
+                      onPress={() => {
+                        this.onDeleteItem(index);
+                      }}
+                    />
+                  </View>
                 </View>
               );
             })}
@@ -124,10 +144,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  containerViewList2: {
+  containerViewList: {
     flexDirection: 'row',
     borderBottomWidth: 1,
+    alignItems: 'center',
     justifyContent: 'space-between'
+  },
+  containerViewList1: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  containerViewList2: {
+    justifyContent: 'center'
   },
   containerButton: {
     paddingLeft: 10

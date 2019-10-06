@@ -12,11 +12,12 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Button,
   TextInput,
   Alert,
   CheckBox
 } from 'react-native';
+import { Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class App extends Component {
   constructor(props) {
@@ -116,6 +117,13 @@ export default class App extends Component {
                   <View style={styles.containerViewList2}>
                     <Button
                       style={styles.buttonDelete}
+                      title="Edit"
+                      onPress={() => {
+                        this.setState({ value: item.task });
+                      }}
+                    />
+                    <Button
+                      style={styles.buttonDelete}
                       title="Delete"
                       onPress={() => {
                         this.onDeleteItem(index);
@@ -155,7 +163,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   containerViewList2: {
-    justifyContent: 'center'
+    justifyContent: 'space-evenly',
+    flexDirection: 'row'
   },
   containerButton: {
     paddingLeft: 10
@@ -175,8 +184,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white'
   },
+  buttonEdit: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: 'tomato',
+    paddingRight: 10
+  },
   buttonDelete: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: 'bold',
     color: 'white'
   }

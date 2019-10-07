@@ -23,6 +23,8 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isEdit: false,
+      editValue: '',
       value: '',
       listtodo: [
         {
@@ -68,33 +70,68 @@ export default class App extends Component {
     });
   };
 
+  onEditItem = task => {
+    for (let i = 0; i < this.state.listtodo.length; i++) {
+      if (this.state.listtodo[i].task == task) {
+        this.state.listtodo[i].task = this.state.editValue;
+        break;
+      }
+    }
+    this.setState({ value: '' });
+    this.setState({ editValue: '' });
+    this.setState({ isEdit: false });
+  };
+
   render() {
     return (
       <ScrollView>
         <View>
           <View style={styles.containerInput}>
             <View>
-              <TextInput
-                placeholder="New ToDo"
-                style={styles.textInputCustom}
-                ref={input => {
-                  this.textInput = input;
-                }}
-                onChangeText={text =>
-                  this.setState({ value: [{ task: text, done: false }] })
-                }
-                value={this.state.value}
-                type="text"
-              />
+              {this.state.isEdit ?
+                <TextInput
+                  placeholder={this.state.value}
+                  style={styles.textInputCustom}
+                  ref={input => {
+                    this.textInput = input;
+                  }}
+                  onChangeText={text => this.setState({ editValue: text })}
+                  value={this.state.editValue}
+                  type="text"
+                />
+                :
+                <TextInput
+                  placeholder="New ToDo"
+                  style={styles.textInputCustom}
+                  ref={input => {
+                    this.textInput = input;
+                  }}
+                  onChangeText={text =>
+                    this.setState({ value: [{ task: text, done: false }] })
+                  }
+                  value={this.state.value}
+                  type="text"
+                />
+              }
             </View>
             <View style={styles.containerButton}>
-              <Button
-                style={styles.buttonCustom}
-                title="Add"
-                onPress={() => {
-                  this.onAddItem();
-                }}
-              />
+              {this.state.isEdit ?
+                <Button
+                  style={styles.buttonCustom}
+                  title="Edit"
+                  onPress={() => {
+                    this.onEditItem(this.state.value);
+                  }}
+                />
+                :
+                <Button
+                  style={styles.buttonCustom}
+                  title="Add"
+                  onPress={() => {
+                    this.onAddItem();
+                  }}
+                />
+              }
             </View>
           </View>
           <View style={styles.containerList}>
@@ -117,14 +154,15 @@ export default class App extends Component {
                   <View style={styles.containerViewList2}>
                     <Button
                       style={styles.buttonDelete}
-                      title="Edit"
+                      icon={<Icon name="edit" size={15} color="white" />}
                       onPress={() => {
                         this.setState({ value: item.task });
+                        this.setState({ isEdit: true });
                       }}
                     />
                     <Button
                       style={styles.buttonDelete}
-                      title="Delete"
+                      icon={<Icon name="trash" size={15} color="white" />}
                       onPress={() => {
                         this.onDeleteItem(index);
                       }}
